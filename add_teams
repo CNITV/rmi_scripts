@@ -1,0 +1,23 @@
+#!/usr/bin/env python3
+#
+# Adds teams into CMS
+#
+# Made by Tudor Roman, public domain
+#
+# This script expects as its first argument a path to a csv file with two columns,
+# name and id. name should be the long name of the team, like "Romania - Juniors",
+# while id should be a short identifier, like "RO_VJ".
+#
+
+import csv
+import sys
+from subprocess import call
+
+if len(sys.argv) != 2:
+    print("Usage: add_teams <csv_file>")
+    sys.exit(1)
+
+with open(sys.argv[1]) as file:
+    reader = csv.DictReader(file, delimiter=',')
+    for row in reader:
+        call(['cmsAddTeam', row['id'], row['name']])

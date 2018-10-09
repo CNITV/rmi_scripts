@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+#
+# Adds users into CMS and generate a nice table
+#
+# Made by Tudor Roman, public domain
+#
+# This script expects as its first argument a csv table with header and two columns, name and id
+# like the add_teams script. The second argument is the output csv.
+#
+
+import csv
+import sys
+import unicodedata
+import os
+import binascii
+from collections import namedtuple
+from subprocess import call
+
+def to_ascii(s):
+    return unicodedata.normalize('NFKD', s).encode('ascii', 'ignore').decode('ascii')
+
+if len(sys.argv) != 3:
+    print("Usage: add_users <csv_in_file> <csv_out_file>")
+    sys.exit(1)
+
+User = namedtuple('User', 'first_name last_name username password team_id')
+users = []
+
+with open(sys.argv[1]) as in_file:
+    reader = csv.DictReader(in_file, delimiter=',')
+    for row in reader:
+        name = row['name'].split(' ')
+        first_name = to_ascii(' '.join(name[0:-1]))
+        last_name = to_ascii(name[-1])
+        username = (last_name + '-' + binascii.b2a_hex(os.urandom(15))[-3:].decode('ascii')).lower()
+        password = binascii.b2a_hex(os.urandom(6)).decode('ascii')
+        users.append(User(first_name, last_name, username, password, row['id']))
+    with open(sys.argv[2], 'w') as out_file:
+        writer = csv.writer(out_file)
+        writer.writerow(['first_name', 'last_name', 'username', 'password', 'team_id'])
+        for u in users:
+            writer.writerow(u)
+    for u in users:
+        call(['cmsAddUser', '-p', u.password, u.first_name, u.last_name, u.username])
+
