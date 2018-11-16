@@ -21,4 +21,4 @@ contest_id = sys.argv[2]
 with open(sys.argv[1]) as file:
     reader = csv.DictReader(file, delimiter=',')
     for row in reader:
-        call(['cmsAddParticipation', '-c', contest_id, '-t', row['team_id'], row['username']])
+        call(['cmsAddParticipation', '-c', row['contest_id'], row['username']])

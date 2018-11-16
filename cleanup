@@ -12,7 +12,7 @@ import sys
 from subprocess import call
 
 if len(sys.argv) != 2:
-    print("Usage: add_participations <csv_file> <contest_id>")
+    print("Usage: cleanup <csv_file> <contest_id>")
     sys.exit(1)
 
 with open(sys.argv[1]) as file:
