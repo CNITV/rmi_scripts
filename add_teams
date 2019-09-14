@@ -6,7 +6,7 @@
 #
 # This script expects as its first argument a path to a csv file with two columns,
 # name and id. name should be the long name of the team, like "Romania - Juniors",
-# while id should be a short identifier, like "RO_VJ".
+# while id should be an integer
 #
 
 import csv
