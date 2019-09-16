@@ -19,11 +19,11 @@ from subprocess import call
 def to_ascii(s):
     return unicodedata.normalize('NFKD', s).encode('ascii', 'ignore').decode('ascii')
 
-if len(sys.argv) > 3:
-    print("Usage: add_users <csv_in_file> <csv_out_file>")
+if len(sys.argv) < 3:
+    print("Usage: add_participations_random <csv_in_file> <csv_out_file> [contest_id]")
     sys.exit(1)
 
-User = namedtuple('User', 'first_name last_name username password')
+User = namedtuple('User', 'first_name last_name username password contest_id')
 users = []
 
 with open(sys.argv[1]) as in_file:
@@ -33,15 +33,19 @@ with open(sys.argv[1]) as in_file:
         first_name = to_ascii(row['first_name'])
         last_name = to_ascii(row['last_name'])
         username = row['username']
-        #password = binascii.b2a_hex(os.urandom(6)).decode('ascii')
-        password = row['password']
-        users.append(User(first_name, last_name, username, password))
-#    with open(sys.argv[2], 'w') as out_file:
-#        writer = csv.writer(out_file)
-#        writer.writerow(['first_name', 'last_name', 'username', 'password', 'contest_id'])
-#        for u in users:
-#            writer.writerow(u)
+        password = binascii.b2a_hex(os.urandom(6)).decode('ascii')
+        #password = row['password']
+        if 'contest_id' in row:
+            contest_id = row['contest_id']
+        if sys.argv[3]:
+            contest_id = sys.argv[3]
+        users.append(User(first_name, last_name, username, password, contest_id))
+    with open(sys.argv[2], 'w') as out_file:
+        writer = csv.writer(out_file)
+        writer.writerow(['first_name', 'last_name', 'username', 'password', 'contest_id'])
+        for u in users:
+            writer.writerow(u)
     for u in users:
         print(u)
-        call(['cmsAddUser', '-p', u.password, u.first_name, u.last_name, u.username])
+        call(['cmsAddParticipation', '-c', u.contest_id, '-p', u.password, u.username])
 
