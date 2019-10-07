@@ -29,12 +29,11 @@ users = []
 with open(sys.argv[1]) as in_file:
     reader = csv.DictReader(in_file, delimiter=',')
     for row in reader:
-        name = row['name'].split(' ')
-        first_name = to_ascii(' '.join(name[0:-1]))
-        last_name = to_ascii(name[-1])
-        username = (last_name + '-' + binascii.b2a_hex(os.urandom(15))[-3:].decode('ascii')).lower()
+        first_name = row['Prenume']
+        last_name = row['Nume']
+        username = (to_ascii(last_name) + '-' + binascii.b2a_hex(os.urandom(15))[-3:].decode('ascii')).lower()
         password = binascii.b2a_hex(os.urandom(6)).decode('ascii')
-        users.append(User(first_name, last_name, username, password, row['id']))
+        users.append(User(first_name, last_name, username, password, row['team_id']))
     with open(sys.argv[2], 'w') as out_file:
         writer = csv.writer(out_file)
         writer.writerow(['first_name', 'last_name', 'username', 'password', 'team_id'])
