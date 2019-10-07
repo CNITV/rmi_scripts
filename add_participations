@@ -30,7 +30,7 @@ with open(sys.argv[1]) as file:
         call(['cmsAddParticipation', '-c', contest_id, '-t', row['team_id'], '-p', password, row['username']])
         users.append(User(row['username'], password))
 
-with open(sys.argv[3]) as out_file:
+with open(sys.argv[3], 'w') as out_file:
     writer = csv.writer(out_file)
     writer.writerow(['username', 'password'])
     for u in users:
