@@ -10,15 +10,27 @@
 
 import csv
 import sys
+import binascii
+import os
 from subprocess import call
 
-if len(sys.argv) != 3:
-    print("Usage: add_participations <csv_file> <contest_id>")
+if len(sys.argv) != 4:
+    print("Usage: add_participations <csv_file> <contest_id> <out_file>")
     sys.exit(1)
 
 contest_id = sys.argv[2]
+User = namedtuple('User', 'username password')
+users = []
 
 with open(sys.argv[1]) as file:
     reader = csv.DictReader(file, delimiter=',')
     for row in reader:
-        call(['cmsAddParticipation', '-c', contest_id, '-t', row['team_id'], row['username']])
+        password = binascii.b2a_hex(os.urandom(6)).decode('ascii')
+        call(['cmsAddParticipation', '-c', contest_id, '-t', row['team_id'], '-p', password, row['username']])
+        users.append(User(row['username'], password))
+
+with open(sys.argv[3]) as out_file:
+    writer = csv.writer(out_file)
+    writer.writerow(['username', 'password'])
+    for u in users:
+        writer.writerow(u)
