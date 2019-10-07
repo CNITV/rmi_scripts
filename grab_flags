@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Adds teams into CMS
+# Grabs flags for teams to use with Ranking Web Server
 #
 # Made by Tudor Roman, public domain
 #
@@ -20,4 +20,6 @@ if len(sys.argv) != 2:
 with open(sys.argv[1]) as file:
     reader = csv.DictReader(file, delimiter=',')
     for row in reader:
-        call(['cmsAddTeam', row['id'], row['name']])
+        country = row['id'][0:2].lower()
+        call(['wget', '-O', '{}.png'.format(row['id']), 'https://github.com/hjnilsson/country-flags/raw/master/png100px/{}.png'.format(country)])
+        print(row['id'][0:2])

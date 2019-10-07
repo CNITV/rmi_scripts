@@ -7,8 +7,8 @@ Cuprins:
 
 * `add_teams` - Adauga echipe
 * `add_users` - Adauga concurentii in CMS
-* `add_participations` - Adauga concurentii in concurs
-* `add_external` - Genereaza useri pentru cei care dau concursul neoficial din
-	exterior.
+* `add_participations` - Adauga concurentii in concurs si genereaza parole
+* `remove_participations` - Scoate concurentii din concurs
+* `grab_flags` - Descarca steaguri pentru ranking
 
 Fiecare script vine cu instructiuni in comments.
