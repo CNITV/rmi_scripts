@@ -21,5 +21,7 @@ with open(sys.argv[1]) as file:
     reader = csv.DictReader(file, delimiter=',')
     for row in reader:
         country = row['id'][0:2].lower()
+        if country == 'vi': # vi for vianu
+            continue
         call(['wget', '-O', '{}.png'.format(row['id']), 'https://github.com/hjnilsson/country-flags/raw/master/png100px/{}.png'.format(country)])
         print(row['id'][0:2])
