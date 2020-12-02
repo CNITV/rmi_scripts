@@ -20,4 +20,4 @@ contest_id = sys.argv[2]
 with open(sys.argv[1]) as file:
     reader = csv.DictReader(file, delimiter=',')
     for row in reader:
-        call(['cmsRemoveParticipation', '-c', contest_id, row['username']])
+        call(['cmsRemoveParticipation', '-c', contest_id, row['username'].strip()])

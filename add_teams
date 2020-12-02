@@ -20,4 +20,4 @@ if len(sys.argv) != 2:
 with open(sys.argv[1]) as file:
     reader = csv.DictReader(file, delimiter=',')
     for row in reader:
-        call(['cmsAddTeam', row['id'], row['name']])
+        call(['cmsAddTeam', row['team_id'], row['team_name']])

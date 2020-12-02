@@ -1,0 +1,36 @@
+#!/usr/bin/env python3
+# Made by Tudor Roman, public domain
+#
+
+import csv
+import sys
+import unicodedata
+import os
+import binascii
+import re
+from collections import namedtuple
+from subprocess import call
+
+if len(sys.argv) != 3:
+    print("Usage: create_team_codes <csv_in_file> <csv_out_file>")
+    sys.exit(1)
+
+delimiters = [' ', '-', '&']
+team_pattern = '|'.join(map(re.escape, delimiters))
+
+teams = []
+
+with open(sys.argv[1]) as in_file:
+    reader = csv.DictReader(in_file, delimiter=',')
+    for row in reader:
+        team_name = row['Echipa']
+        team_name_components = list(filter(lambda s: s != "", re.split(team_pattern, team_name)))
+        team_id = (team_name_components[0] + ''.join(map(lambda s: s[0:2], team_name_components[1:]))).upper()
+        teams.append( (team_name, team_id) )
+    with open(sys.argv[2], 'w') as out_file:
+        writer = csv.writer(out_file)
+        writer.writerow(['team_name', 'team_id'])
+        for t in teams:
+            writer.writerow(t)
+    for t in teams:
+        print(t)

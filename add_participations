@@ -20,18 +20,21 @@ if len(sys.argv) != 4:
     sys.exit(1)
 
 contest_id = sys.argv[2]
-User = namedtuple('User', 'username password')
+User = namedtuple('User', 'username password team_name team_id')
 users = []
 
 with open(sys.argv[1]) as file:
     reader = csv.DictReader(file, delimiter=',')
     for row in reader:
-        password = binascii.b2a_hex(os.urandom(6)).decode('ascii')
-        call(['cmsAddParticipation', '-c', contest_id, '-t', row['team_id'], '-p', password, row['username']])
-        users.append(User(row['username'], password))
+        password = 'p' + binascii.b2a_hex(os.urandom(6)).decode('ascii')
+        team_id = row['team_id'].strip()
+        team_name = row['team_name'].strip()
+        username = row['username'].strip()
+        call(['cmsAddParticipation', '-c', contest_id, '-t', team_id, '-p', password, username])
+        users.append(User(username, password, team_name, team_id))
 
 with open(sys.argv[3], 'w') as out_file:
     writer = csv.writer(out_file)
-    writer.writerow(['username', 'password'])
+    writer.writerow(['username', 'password', 'team_name', 'team_id'])
     for u in users:
         writer.writerow(u)

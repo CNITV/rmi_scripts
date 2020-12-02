@@ -23,22 +23,26 @@ if len(sys.argv) != 3:
     print("Usage: add_users <csv_in_file> <csv_out_file>")
     sys.exit(1)
 
-User = namedtuple('User', 'first_name last_name username password team_id')
+User = namedtuple('User', 'first_name last_name username password team_id team_name')
 users = []
 
 with open(sys.argv[1]) as in_file:
     reader = csv.DictReader(in_file, delimiter=',')
     for row in reader:
-        first_name = row['Prenume']
-        last_name = row['Nume']
+        if row['Tip lider'] != "":
+            continue
+        name = row['Nume concurent'].strip().split(' ')
+        first_name = ' '.join(name[0:-1])
+        last_name = name[-1]
+        team_name = row['Echipa'].strip()
+        team_id = row['team_id'].strip()
         username = (to_ascii(last_name) + '-' + binascii.b2a_hex(os.urandom(15))[-3:].decode('ascii')).lower()
-        password = binascii.b2a_hex(os.urandom(6)).decode('ascii')
-        users.append(User(first_name, last_name, username, password, row['team_id']))
+        password = 'p' + binascii.b2a_hex(os.urandom(6)).decode('ascii')
+        users.append(User(first_name, last_name, username, password, team_id, team_name))
     with open(sys.argv[2], 'w') as out_file:
         writer = csv.writer(out_file)
-        writer.writerow(['first_name', 'last_name', 'username', 'password', 'team_id'])
+        writer.writerow(['first_name', 'last_name', 'username', 'password', 'team_id', 'team_name'])
         for u in users:
             writer.writerow(u)
     for u in users:
         call(['cmsAddUser', '-p', u.password, u.first_name, u.last_name, u.username])
-
